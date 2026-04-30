@@ -21,7 +21,7 @@ if( Sys.info()['nodename']=='cgb01'){
   
   
 }else if( Sys.info()['user'] == 'cgb01'){
-  DATA_DIR='/Users/cgb01/repo/KRAS_WGS/'
+  DATA_DIR='/Users/cgb01/repo/KRASG12C_sequential_treatment//'
   CGB_DIR='/Users/cgb01/'
   GIT_LOCAL_DIR='/Users/cgb01/repo/'
   CGB_SHARED='~/Dropbox (HuGeF)/'
