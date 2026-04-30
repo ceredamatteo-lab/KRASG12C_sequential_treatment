@@ -131,41 +131,6 @@ install.packages(c("dplyr","tidyr","tibble","stringr","forcats","ggplot2",
 BiocManager::install(c("ComplexHeatmap","clusterProfiler","DOSE"))
 ```
 
-Then from the project root:
-
-```bash
-# Genomic events (independent of RNA)
-Rscript Script/circos/Calu_circos.R
-Rscript Script/circos/H23_circos.R
-Rscript Script/circos/MEP_circos.R
-Rscript Script/circos/sv_circos_export.R          # → SV_circos_selected.xlsx
-
-Rscript Script/cnv/cnv_upset_heatmaps.R
-Rscript Script/cnv/cnv_jaccard.R
-Rscript Script/cnv/cnv_drug_only_signature_heatmap.R
-
-Rscript Script/mutations/mutations_upset.R
-Rscript Script/mutations/Calu_mutations_heatmap.R
-Rscript Script/mutations/H23_mutations_heatmap.R
-Rscript Script/mutations/MEP_mutations_heatmap.R
-
-# RNA pipeline (ORA must run before the ORA plotters)
-Rscript Script/ora/run_ORA_H23_CALU.R              # → ora_H23.rds, ora_CALU.rds
-Rscript Script/ora/plot_ORA_H23_CALU.R             # → Figures/ORA/
-Rscript Script/ora/run_ORA_MEM_MEP.R               # → ora_MEM.rds, ora_MEP.rds
-Rscript Script/ora/plot_ORA_MEM_MEP.R              # → Figures/ORA/MEM_MEP/
-
-Rscript Script/rna/heatmap_RAS84_MAPK_ERK.R
-Rscript Script/rna/heatmap_RAS84_MAPK_ERK_MEM_MEP.R
-Rscript Script/rna/summary_MAPK_ERK.R
-Rscript Script/rna/summary_MAPK_ERK_MEM_MEP.R
-Rscript Script/rna/volcano_pathways.R
-Rscript Script/rna/alluvial_DEG_signatures.R
-```
-
-Each script resolves its own location (`commandArgs(--file=)`) and walks
-**two levels up** to find the project root — so it works regardless of
-the caller's working directory.
 
 ---
 
