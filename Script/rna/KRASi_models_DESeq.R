@@ -24,13 +24,13 @@ library(ComplexHeatmap)
 
 
 # setting -----
-source('Scripts/config//environment.R')
-source("Scripts/config/config_signatures.R")
+source('Script/utils//environment.R')
+source("Script/utils/config_signatures.R")
+source("Script/utils/utils_RNA.R")
 
 
-source(paste0(GIT_LOCAL_DIR, "Pipelines/Utils/Utils_RNA.R"))
-source(paste0(GIT_LOCAL_DIR, "Pipelines/Utils/utils_RNA_DESeq2.R"))
-source(paste0(GIT_LOCAL_DIR, "Pipelines/Utils/Utils_ORA.R"))
+
+
 
 
 theme_big2 = function(base_size = 12, base_family = "sans"){
@@ -179,56 +179,4 @@ supp = supp[,c(1:9, 13)]
 write.csv(supp, 'Tables/Supplementary__H23_CALU_DEG.csv', quote = F, row.names = F)
 
 table(supp$contrast, sign(supp$log2FoldChange))
-
-
-
-
-# ORA ------
-go = readRDS(paste0(DATA_DIR,"Rdata/go_list__20260214.rds"))
-sub.go = list('kegg' = go$kegg, 'hallmarks' = go$hallmarks)
-
-
-
-
-ora.list = dlply(supp, .(contrast)) %>% lapply(., function(x){deg = list('deg' = x$gene_id_nv )})
-
-
-ora = lapply(ora.list, function(x){
-  lapply(x, function(y){ 
-    ora = ORA(y, gene_set_list = sub.go)
-    ora = add_DOSE_measure_to_ORA(ora)
-    # ora = retrieving_gene_name_ora(ora, gene_info = gene_info_table)
-    ora$Description = gsub('KEGG_|HALLMARK_|REACTOME_|BIOCARTA_', '', ora$Description)
-    ora$Description = gsub('_', ' ', ora$Description)
-    ora$Description = stringi::stri_trans_totitle(ora$Description)
-    return(ora) }) %>% bind_rows(., .id = 'de.status')
-}) %>% bind_rows(., .id = 'contrast')
-
-ora$condition = ifelse(grepl('AMG510', ora$contrast), 'sotorasib', 'adagrasib')
-ora$cell = ifelse(grepl('H23', ora$contrast), 'H23', 'CALU')
-ora$geneRatio.mod = as.numeric(sapply(strsplit(as.character(ora$GeneRatio), '\\/'), '[[', 1))
-ora$cell = factor(ora$cell, levels = c('H23', 'CALU'))
-
-ora %>%  
-  filter(grepl('kegg$|hallmarks$', ontology), p.adjust < 0.1 ) %>% 
-  dplyr::group_by(ontology, condition, cell) %>%
-  slice_head(n = 10) %>%
-  ggplot(., aes(richFactor, Description, fill = condition, size = geneRatio.mod, shape = condition )) +
-  geom_point(shape = 21) +
-  scale_color_manual(values = c('black', 'transparent')) +
-  # scale_fill_viridis_c(option = 'D', guide = guide_colorbar(reverse = T, draw.llim = T), direction = -1) +
-  facet_grid(ontology ~ cell, scales = 'free', space = 'free') +
-  theme_minimal() +
-  xlab("") +
-  ylab(NULL) +
-  theme(text = element_text(size = 12),
-        strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(angle = 90))
-
-
-
-
-
-
-
 

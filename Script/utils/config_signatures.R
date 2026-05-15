@@ -13,7 +13,7 @@
 ## ***************************
 
 
-source("Scripts/config/environment.R")
+source("Script/utils//environment.R")
 setwd(DATA_DIR)
 
 
